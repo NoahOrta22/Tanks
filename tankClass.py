@@ -95,7 +95,12 @@ class Tank():
                 self.shoot = False
                 self.start_power = False
 
-    # getting the power of the button from how long the user waits until the second button press
+    # Description: 
+    #       getting the power of the button from how long the user waits 
+    #       until the second button press.
+    #       The first button press initiates the shot. 
+    #       The second button press shoots. 
+    #       The time between the first and second button press determines the power
     def start_shoot(self):
         # it hasn't shot
         if self.shoot == False:
