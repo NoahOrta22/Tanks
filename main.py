@@ -51,6 +51,7 @@ def draw_wall():
 left_tank = Tank(screen, 'red', [40, left_floor_y-40, 70, 40], wall_rect, timer, 'left')
 right_tank = Tank(screen, 'blue', [WIDTH-110, right_floor_y-40, 70, 40], wall_rect, timer, 'right')
 
+# checks if the bullet is colliding with the world. 
 def bullet_colliding(bullet):
     # making sure bullet is on screen
     if (bullet.x > -1 and bullet.x < WIDTH + 10):

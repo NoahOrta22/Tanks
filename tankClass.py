@@ -4,6 +4,24 @@ import math
 WIDTH = 1400
 GRAVITY = -9.8
 
+
+#   Description: 
+#       Tank class dealing with tank movement, health, what screen the tank is on,
+#       position of the tank.
+#
+#   Member variables:
+#       health      - int    : health of the tank
+#       screen      - pygame : the pygame screen
+#       color       - str     : color of the tank
+#       rect        - py.rect  : pygame rect object for the tank
+#       wall        - py.rect  : pygame rect object of the wall in the middle
+#       timer       - py.time : timer object from pygame
+#       canon_length- int : length of the canon
+#       bullet      - Class Bullet : a bullet object
+#       shoot       - bool    : bullet is being shot
+#       start_power - bool : powerup for bullet has been started
+#       start_t     - int   : the pygame time of when the the powerup started for the bullet
+#       side        - str      : the side (left or right) that the tank is on
 class Tank():
     def __init__(self, screen, color, coordinates, wall, timer, side):
         self.health = 100
@@ -48,12 +66,12 @@ class Tank():
 
         # TANK ON LEFT
         elif self.side == 'left':
-            # for moving
-            if key[py.K_a] and self.rect.left >= 0:                       # move left
+            # FOR MOVING
+            if key[py.K_a] and self.rect.left >= 0:                        # move left
                 self.rect.move_ip(-speed, 0)
             if key[py.K_d] and not self.rect.colliderect(self.wall):       # move right
                 self.rect.move_ip(speed, 0)
-            # if a bullet is not being shot then you can change the angle
+            # bullet is not being shot then you can change the angle
             if not self.shoot:
                 if key[py.K_w]:
                     self.bullet.change_angle(angle_speed)
@@ -99,8 +117,11 @@ class Tank():
 
     # drawing the tank
     def draw(self):
+        # draw the body of the tank
         py.draw.rect(self.screen, self.color, self.rect, 0, 5)
+        #draw the top circle of the tank
         py.draw.circle(self.screen, self.color, self.rect.midtop, 20) 
+        # draw the canon of the tank
         line_end = tuple(map(sum, zip(self.rect.midtop, law_of_sines(self.bullet.angle, self.canon_length))))
         py.draw.line(
             self.screen, 
@@ -110,6 +131,19 @@ class Tank():
             15)
 
 
+#   Description:
+#       Deals with all the bullet stuff
+#
+#   Member Variables:
+#       startx  - int   : x coordinate of where the bullet was shot from
+#       starty  - int   : y coordinate of where the bullet was shot from
+#       x       - int   : current x coordinate of the bullet
+#       y       - int   : current y coordinate of the bullet
+#       screen  - pygame: the pygame screen
+#       radius  - int   : radius of the bullet
+#       color   - str   : color of the bullet
+#       power   - int   : power of the bullet being shot
+#       angle   - float : radian angle of the bullet being shot
 class Bullet():
     def __init__(self, screen, coord):
         self.startx = coord[0]
@@ -121,32 +155,30 @@ class Bullet():
         self.color = 'black'
         self.time = 0
         self.power = 100
+        # if it's the left tank
         if self.x < (WIDTH/2):
             self.angle = 0.1
+        # it's the right tank
         else:
             self.angle = math.pi-0.1
 
+    # draws the bullet
     def draw(self):
         py.draw.circle(self.screen, self.color, (self.x, self.y), self.radius)
 
     # Description: 
     #       changes the angle of the 'canon'
     # Params:
-    #       val - float = by how much we want to change the angle
+    #       val - float : by how much we want to change the angle
     def change_angle(self, val):
         if (val > 0 and self.angle < 3) or (val < 0 and self.angle >= .1):
             self.angle += val
-        
-
+    
     # Description: 
     #       finding the new x and y coordinates for the bullet
-    # Params:
-    #       startx : int   - starting x coordinate
-    #       starty : int   - starting y coordinate
-    #       power  : float - the power of the shot
-    #       angle  : float - angle of the bullet
-    #       time   : float - time since bullet was shot
-
+    #   Returns: 
+    #       the new x and y position of the bullet
+    #
     # @staticmethod
     def path(self):
         velx = math.cos(self.angle) * self.power
@@ -158,14 +190,19 @@ class Bullet():
         newx = round(self.startx + distX)
         newy = round(self.starty - distY)
 
+        # the new x and y position
         return newx, newy
 
 
-# Description:
-#       Left angle is A, Top angle is B, right angle is C
-#  Params:
+#   Description:
+#       Left angle is A, Top angle is B, right angle is C. 
+#       Math function to find the x and y lengths
+#
+#   Params:
 #       canon_length - the length of the canonf
 #       
+#   Returns: 
+#       X and Y length's of the triangle
 def law_of_sines(angleA, canon_length):
     angleB = (math.pi/2) - angleA
     angleC = math.pi/2
