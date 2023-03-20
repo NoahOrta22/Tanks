@@ -29,8 +29,8 @@ clock.tick(20)
 timer = py.time
 
 # get a random floor level and wall height
-left_floor_y = random.randint(100, 700)
-right_floor_y = random.randint(100, 700)
+left_floor_y = random.randint(210, 700)
+right_floor_y = random.randint(210, 700)
 high_wall = min(left_floor_y, right_floor_y)
 low_wall = max(left_floor_y, right_floor_y)
 wall_y = random.randint(200, high_wall-50)
@@ -63,12 +63,12 @@ def bullet_colliding(bullet):
     
     return True
 
-#Displays power level of the bullet
-def bulletpower(level,playernum):
-    text = py.font.SysFont("Roboto-Bold", 25).render("Power: " + str(level) + "%", True, 'wheat')
-    if playernum == 1:
+# Displays power level of the bullet **** UPDATED ****
+def bulletpower(tank):
+    text = py.font.SysFont("Roboto-Bold", 25).render("Power: " + str(int(tank.get_power())) + "%", True, 'wheat')
+    if tank.side == 'right':
         screen.blit(text, [WIDTH * .75, 0])
-    if playernum == 2:
+    if tank.side == 'left':
         screen.blit(text, [WIDTH * .25, 0])
 
 def health_bars(player1_health, player2_health):
@@ -99,7 +99,6 @@ def draw_stuff():
     draw_right_floor()
     draw_wall()
     health_bars(left_tank.health,right_tank.health)
-    
 
 
 left_shoot = False
@@ -144,12 +143,12 @@ while run:
                 left_tank.start_shoot()
                 power_increase2 = 2
                 fire_power2 += power_increase2
-                bulletpower(fire_power2,2)
+                # bulletpower(fire_power2,2)
             if event.key == py.K_SPACE:
                 right_tank.start_shoot()
                 power_increase = 2
                 fire_power += power_increase
-                bulletpower(fire_power,1)
+                # bulletpower(fire_power,1)
                 # if left_shoot == False: 
                 #     if start_left_power == False:
                 #         start_t = timer.get_ticks()
@@ -184,8 +183,8 @@ while run:
         fire_power=0
     if left_tank.shoot:
         fire_power2=0
-    bulletpower(fire_power,1)
-    bulletpower(fire_power2,2)
+    bulletpower(right_tank)
+    bulletpower(left_tank)
     right_tank.handle_keys()
     left_tank.handle_keys()
     py.display.flip()

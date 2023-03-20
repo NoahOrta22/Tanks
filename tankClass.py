@@ -105,7 +105,7 @@ class Tank():
                 self.start_power = True
             # it has started the power up
             else:
-                self.bullet.power = (self.timer.get_ticks()-self.start_t)/12
+                self.bullet.power = self.get_power()
                 self.shoot = True
                 # getting the starting position for the bullet
                 self.bullet.startx = self.rect.midtop[0]
@@ -114,6 +114,15 @@ class Tank():
                 self.bullet.y = self.bullet.starty
                 # setting the start times to zero
                 self.bullet.time = 0
+
+    # gets the current power of the power up
+    def get_power(self):
+        if self.shoot == True:
+            return self.bullet.power
+        elif self.start_power == True:
+            return (self.timer.get_ticks()-self.start_t)/12
+        else:
+            return 0
 
     # drawing the tank
     def draw(self):
@@ -154,7 +163,7 @@ class Bullet():
         self.radius = 7
         self.color = 'black'
         self.time = 0
-        self.power = 100
+        self.power = 0
         # if it's the left tank
         if self.x < (WIDTH/2):
             self.angle = 0.1
