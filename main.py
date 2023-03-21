@@ -1,14 +1,3 @@
-"""
- 
-  ____  _____                __        ____      ____  __              _     ____  ____                        ____  ____                 ______                           
- |_   \|_   _|              [  |      |_  _|    |_  _|[  |            / |_  |_   ||   _|                      |_  _||_  _|               |_   _ `.                         
-   |   \ | |   .--.   ,--.   | |--.     \ \  /\  / /   | |--.   ,--. `| |-'   | |__| |   ,--.  _   __  .---.    \ \  / / .--.   __   _     | | `. \  .--.   _ .--.  .---.  
-   | |\ \| | / .'`\ \`'_\ :  | .-. |     \ \/  \/ /    | .-. | `'_\ : | |     |  __  |  `'_\ :[ \ [  ]/ /__\\    \ \/ // .'`\ \[  | | |    | |  | |/ .'`\ \[ `.-. |/ /__\\ 
-  _| |_\   |_| \__. |// | |, | | | |      \  /\  /     | | | | // | |,| |,   _| |  | |_ // | |,\ \/ / | \__.,    _|  |_| \__. | | \_/ |,  _| |_.' /| \__. | | | | || \__., 
- |_____|\____|'.__.' \'-;__/[___]|__]      \/  \/     [___]|__]\'-;__/\__/  |____||____|\'-;__/ \__/   '.__.'   |______|'.__.'  '.__.'_/ |______.'  '.__.' [___||__]'.__.' 
-                                                                                                                                                                           
- 
-"""
 
 import pygame as py
 import random
@@ -28,6 +17,87 @@ explodesound = py.mixer.Sound('Chunky Explosion.mp3')
 clock = py.time.Clock()
 clock.tick(20)
 timer = py.time
+
+
+
+
+#--------------------------------------------fonts with size, for text_object function----------------
+smallfont = py.font.SysFont("comicsansms", 25)
+medfont = py.font.SysFont("comicsansms", 50)
+largefont = py.font.SysFont("Yu Mincho Demibold", 85)
+vsmallfont = py.font.SysFont("Yu Mincho Demibold", 25)
+
+#--------------------------------------------defining score function----------------------------------
+def score(score):
+    text = smallfont.render("Score: " + str(score), True, 'white')
+    py.blit(text, [0, 0])
+
+#---defining function to get the fonts and sizes assigned with them by size names by default size="small"--
+def text_objects(text, color, size="small"):
+    if size == "small":
+        textSurface = smallfont.render(text, True, color)
+    if size == "medium":
+        textSurface = medfont.render(text, True, color)
+    if size == "large":
+        textSurface = largefont.render(text, True, color)
+    if size == "vsmall":
+        textSurface = vsmallfont.render(text, True, color)
+
+    return textSurface, textSurface.get_rect()
+
+#---------------------fuction for texts that has to appear over button----------------------------------------
+def text_to_button(msg, color, buttonx, buttony, buttonwidth, buttonheight, size="vsmall"):
+    textSurf, textRect = text_objects(msg, color, size)
+    textRect.center = ((buttonx + (buttonwidth / 2)), buttony + (buttonheight / 2))
+    screen.blit(textSurf, textRect)
+
+#--------------------fuction for texts that has to appear over screen----------------------------------------
+def message_to_screen(msg, color, y_displace=0, size="small"):
+    textSurf, textRect = text_objects(msg, color, size)
+    textRect.center = (int(WIDTH / 2), int(HEIGHT / 2) + y_displace)
+    screen.blit(textSurf, textRect)
+
+
+#--------------function for buttons having action calls and text on it callings---------------------------
+def button(text, x, y, width, height, inactive_color, active_color, action=None,size=" "):
+    cur = py.mouse.get_pos()
+    click = py.mouse.get_pressed()
+    # print(click)
+    if x + width > cur[0] > x and y + height > cur[1] > y:
+        py.draw.rect(screen, active_color, (x, y, width, height))
+        if click[0] == 1 and action != None:
+            if action == "quit":
+                py.quit()
+                quit()
+            if action == "play":
+                gameloop()
+
+    else:
+        py.draw.rect(screen, inactive_color, (x, y, width, height))
+
+    text_to_button(text, 'black', x, y, width, height)
+#---------------------------function for players win screen--------------------------------------------------
+def you_win(playernum):
+    win = True
+
+    while win:
+        for event in py.event.get():
+            # print(event)
+            if event.type == py.QUIT:
+                py.quit()
+                quit()
+
+        screen.fill('red')
+        message_to_screen(f"Player {playernum} won!", 'white', -100, size="large")
+        message_to_screen("Congratulations!", 'wheat', -30)
+
+        button("Play Again", 550, 500, 150, 50, 'wheat', 'light_green', action="play")
+        button("Quit", 950, 500, 100, 50, 'wheat', 'light_red', action="quit")
+
+        py.display.update()
+
+        clock.tick(30)
+
 
 # get a random floor level and wall height
 left_floor_y = random.randint(210, 700)
@@ -200,7 +270,7 @@ while run:
                 #         left_tank.bullet.angle = 1.0
 
         elif event.type == py.KEYUP:
-             if event.key == py.K_SPACE or event.key == py.K_x:
+            if event.key == py.K_SPACE or event.key == py.K_x:
                     power_increase = 0
                     power_increase2 = 0
     
@@ -227,6 +297,11 @@ while run:
             left_tank.health=left_tank.health-25
             print("left hit boi")
             leftHit = False
+            if left_tank.health <= 0:
+                you_win(1)
+
+
+
     if left_tank.shoot:
         fire_power2=0
         if rightHit:
@@ -242,6 +317,8 @@ while run:
             right_tank.health = right_tank.health-25
             print("right hit boi")
             rightHit = False
+            if right_tank.health <= 0:
+                you_win(2)
 
     
     bulletpower(right_tank)
@@ -250,3 +327,4 @@ while run:
     left_tank.handle_keys()
     py.display.flip()
         
+            
