@@ -12,6 +12,7 @@
 
 import pygame as py
 import random
+import os
 from tankClass import Tank
 
 py.init()
@@ -22,7 +23,7 @@ HEIGHT = 800
 screen = py.display.set_mode([WIDTH, HEIGHT])
 py.display.set_caption('TANKS')
 screen.fill('deepskyblue4')
-
+explodesound = py.mixer.Sound('Chunky Explosion.mp3')
 # set a limit for the cpu
 clock = py.time.Clock()
 clock.tick(20)
@@ -51,17 +52,27 @@ def draw_wall():
 left_tank = Tank(screen, 'red', [40, left_floor_y-40, 70, 40], wall_rect, timer, 'left')
 right_tank = Tank(screen, 'blue', [WIDTH-110, right_floor_y-40, 70, 40], wall_rect, timer, 'right')
 
+
 # checks if the bullet is colliding with the world. 
-def bullet_colliding(bullet):
+def bullet_colliding(bullet,enemyTank):
     # making sure bullet is on screen
     if (bullet.x > -1 and bullet.x < WIDTH + 10):
         # bullet is not colliding with wall
         if not (bullet.x >= wall_rect.left-bullet.radius and bullet.x <= wall_rect.right+bullet.radius and bullet.y > wall_rect.top-bullet.radius):
             # bullet is not colliding with the floor
             if (bullet.x <= WIDTH/2 and bullet.y < left_floor_y-bullet.radius) or (bullet.x >= WIDTH/2 and bullet.y < right_floor_y-bullet.radius):
-                return False
+                #bullet is colliding with tank
+                if not (bullet.collides_with(enemyTank)):      
+                    return False
     
-    return True
+
+    return True, 
+
+#Returns if tank has been hit or not
+def hit(bullet,enemyTank):
+    if (bullet.collides_with(enemyTank)):
+        return True
+    return False
 
 # Displays power level of the bullet **** UPDATED ****
 def bulletpower(tank):
@@ -86,8 +97,8 @@ def health_bars(player1_health, player2_health):
     else:
         player2_health_color = 'red'
 
-    py.draw.rect(screen, player1_health_color, (1220, 25, player1_health, 25))
-    py.draw.rect(screen, player2_health_color, (20, 25, player2_health, 25))
+    py.draw.rect(screen, player2_health_color, (1220, 25,player2_health , 25))
+    py.draw.rect(screen, player1_health_color, (20, 25, player1_health, 25))
     
 
 # draw all back screen stuff and tanks
@@ -111,13 +122,33 @@ fire_power2 = 0
 angle = 0
 
 
+# Load explosion images
+explosion_images = []
+for i in range(1,8):
+    filename = os.path.join('Explosions/', f'Explosion{i}.png')
+    image = py.image.load(filename).convert()
+    explosion_images.append(image)
+
+# Set up explosion animation
+explosion_animation = py.sprite.Group()
+for i in range(0,7):
+    explosion_sprite = py.sprite.Sprite()
+    explosion_sprite.image = explosion_images[i]
+    explosion_sprite.rect = explosion_sprite.image.get_rect()
+    explosion_animation.add(explosion_sprite)
+
+
+
+
 run = True
 while run:
-
     clock.tick(40)
     draw_stuff() 
-    left_tank.draw_bullet(bullet_colliding(left_tank.bullet))
-    right_tank.draw_bullet(bullet_colliding(right_tank.bullet))
+    left_tank.draw_bullet(bullet_colliding(left_tank.bullet,right_tank.rect))
+    rightHit = hit(left_tank.bullet,right_tank.rect)
+    right_tank.draw_bullet(bullet_colliding(right_tank.bullet,left_tank.rect))
+    leftHit = hit(right_tank.bullet,left_tank.rect)
+
 
     # if left_shoot: 
     #     bullet = left_tank.bullet
@@ -128,6 +159,8 @@ while run:
     #     else:
     #         left_shoot = False
     #         start_left_power = False
+
+
 
 
     for event in py.event.get():
@@ -181,8 +214,36 @@ while run:
 
     if right_tank.shoot:
         fire_power=0
+        if leftHit:
+            # Start explosion animation
+            explosion_animation_pos = right_tank.bullet.x, right_tank.bullet.y
+            explodesound.play()
+            for i in range(0,7):
+                explosion_sprite = explosion_animation.sprites()[i]
+                explosion_sprite.rect.center = explosion_animation_pos
+                screen.blit(explosion_sprite.image, explosion_sprite.rect)
+                py.display.flip()
+                py.time.wait(50)
+            left_tank.health=left_tank.health-25
+            print("left hit boi")
+            leftHit = False
     if left_tank.shoot:
         fire_power2=0
+        if rightHit:
+            # Start explosion animation
+            explosion_animation_pos = left_tank.bullet.x, left_tank.bullet.y
+            explodesound.play()
+            for i in range(0,7):
+                explosion_sprite = explosion_animation.sprites()[i]
+                explosion_sprite.rect.center = explosion_animation_pos
+                screen.blit(explosion_sprite.image, explosion_sprite.rect)
+                py.display.flip()
+                py.time.wait(50)
+            right_tank.health = right_tank.health-25
+            print("right hit boi")
+            rightHit = False
+
+    
     bulletpower(right_tank)
     bulletpower(left_tank)
     right_tank.handle_keys()

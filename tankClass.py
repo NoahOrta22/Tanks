@@ -206,6 +206,21 @@ class Bullet():
 
         # the new x and y position
         return newx, newy
+    
+        # Description: 
+    #       Used to get the bullets collision detection
+    #   Returns: 
+    #       returns the true or false if based on if the bullet collided 
+    #
+    #
+   # check for collision with a rect
+    def collides_with(self, rect):
+        # create a Rect object representing the bullet
+        bullet_rect = py.Rect(self.x - self.radius, self.y - self.radius, self.radius * 2, self.radius * 2)
+        
+        # check if the bullet collides with the rect
+        return bullet_rect.colliderect(rect)
+    
 
 
 #   Description:
