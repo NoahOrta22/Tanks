@@ -13,6 +13,7 @@ screen = py.display.set_mode([WIDTH, HEIGHT])
 py.display.set_caption('TANKS')
 screen.fill('deepskyblue4')
 explodesound = py.mixer.Sound('Chunky Explosion.mp3')
+battlesound = py.mixer.Sound('battle.mp3')
 # set a limit for the cpu
 clock = py.time.Clock()
 clock.tick(20)
@@ -211,6 +212,7 @@ for i in range(0,7):
 
 
 run = True
+battlesound.play()
 while run:
     clock.tick(40)
     draw_stuff() 
