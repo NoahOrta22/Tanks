@@ -94,6 +94,19 @@ class Tank():
             else:
                 self.shoot = False
                 self.start_power = False
+    
+        # draw the bullet if it's been shot
+    def draw_bullet2(self, colliding):
+        if self.shoot: 
+            bullet = self.bullet
+            if not colliding:
+                bullet.time += 0.18
+                bullet.x, bullet.y = bullet.path()
+                bullet.draw2()
+                self.draw()
+            else:
+                self.shoot = False
+                self.start_power = False
 
     # Description: 
     #       getting the power of the button from how long the user waits 
@@ -179,6 +192,10 @@ class Bullet():
     # draws the bullet
     def draw(self):
         py.draw.circle(self.screen, self.color, (self.x, self.y), self.radius)
+
+    # draws the bullet
+    def draw2(self):
+        py.draw.circle(self.screen, self.color, (self.x, self.y), 90)
 
     # Description: 
     #       changes the angle of the 'canon'

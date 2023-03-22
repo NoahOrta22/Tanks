@@ -14,6 +14,7 @@ py.display.set_caption('TANKS')
 screen.fill('deepskyblue4')
 explodesound = py.mixer.Sound('Chunky Explosion.mp3')
 battlesound = py.mixer.Sound('battle.mp3')
+cheatsound = py.mixer.Sound('TargetAcquired.wav')
 # set a limit for the cpu
 clock = py.time.Clock()
 clock.tick(20)
@@ -212,11 +213,15 @@ for i in range(0,6):
 
 
 run = True
+cheat_code = False
 battlesound.play()
 while run:
     clock.tick(40)
     draw_stuff() 
-    left_tank.draw_bullet(bullet_colliding(left_tank.bullet,right_tank.rect))
+    if cheat_code:
+        left_tank.draw_bullet2(bullet_colliding(left_tank.bullet,right_tank.rect))
+    else:
+        left_tank.draw_bullet(bullet_colliding(left_tank.bullet,right_tank.rect))
     right_tank.draw_bullet(bullet_colliding(right_tank.bullet,left_tank.rect))
     
 
@@ -242,6 +247,14 @@ while run:
 
         # check if one of the arrow keys was pressed
         if event.type == py.KEYDOWN:
+
+            if event.key == py.K_z:
+                cheat_code = True
+                ("Print Cheat code activated for Left")
+                cheatsound.play()
+                message_to_screen("Cheat Code Activated!", 'wheat', -30)
+                py.time.wait(50)
+
             # doing the power for the left player
             if event.key == py.K_x:
                 left_tank.start_shoot()
@@ -307,7 +320,7 @@ while run:
 
     if left_tank.shoot:
         fire_power2=0
-        if rightHit:
+        if rightHit and not cheat_code:
             # Start explosion animation
             explosion_animation_pos = left_tank.bullet.x, left_tank.bullet.y
             explodesound.play()
@@ -318,6 +331,21 @@ while run:
                 py.display.flip()
                 py.time.wait(50)
             right_tank.health = right_tank.health-25
+            print("right hit boi")
+            rightHit = False
+            if right_tank.health <= 0:
+                you_win(2)
+        if rightHit and cheat_code:
+            # Start explosion animation
+            explosion_animation_pos = left_tank.bullet.x, left_tank.bullet.y
+            explodesound.play()
+            for i in range(0,6):
+                explosion_sprite = explosion_animation.sprites()[i]
+                explosion_sprite.rect.center = explosion_animation_pos
+                screen.blit(py.transform.scale(explosion_sprite.image,(150,150)), explosion_sprite.rect)
+                py.display.flip()
+                py.time.wait(50)
+            right_tank.health = right_tank.health-50
             print("right hit boi")
             rightHit = False
             if right_tank.health <= 0:
