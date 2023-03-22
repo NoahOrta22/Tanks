@@ -225,7 +225,6 @@ while run:
     right_tank.draw_bullet(bullet_colliding(right_tank.bullet,left_tank.rect))
     
 
-
     # if left_shoot: 
     #     bullet = left_tank.bullet
     #     if bullet.y < 700 - bullet.radius:
@@ -235,8 +234,6 @@ while run:
     #     else:
     #         left_shoot = False
     #         start_left_power = False
-
-
 
 
     for event in py.event.get():
@@ -356,8 +353,12 @@ while run:
     
     bulletpower(right_tank)
     bulletpower(left_tank)
-    right_tank.handle_keys()
-    left_tank.handle_keys()
+
+    ## don't let the tanks move if they've shot
+    if not right_tank.shoot:
+        right_tank.handle_keys()
+    if not left_tank.shoot:
+        left_tank.handle_keys()
     py.display.flip()
         
             

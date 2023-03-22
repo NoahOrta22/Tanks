@@ -133,12 +133,15 @@ class Tank():
                 # setting the start times to zero
                 self.bullet.time = 0
 
-    # gets the current power of the power up
+    # gets the current power of the 'power up'
     def get_power(self):
+        # a bullet is being shot
         if self.shoot == True:
             return self.bullet.power
+        # a bullet is not being shot and user is doing the power up
         elif self.start_power == True:
-            return (self.timer.get_ticks()-self.start_t)/12
+            return (self.timer.get_ticks()-self.start_t)/8
+        # Bullet is not being shot and power up isn't started
         else:
             return 0
 
