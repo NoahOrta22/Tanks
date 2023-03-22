@@ -195,14 +195,14 @@ angle = 0
 
 # Load explosion images
 explosion_images = []
-for i in range(1,8):
+for i in range(1,7):
     filename = os.path.join('Explosions/', f'Explosion{i}.png')
     image = py.image.load(filename).convert()
     explosion_images.append(image)
 
 # Set up explosion animation
 explosion_animation = py.sprite.Group()
-for i in range(0,7):
+for i in range(0,6):
     explosion_sprite = py.sprite.Sprite()
     explosion_sprite.image = explosion_images[i]
     explosion_sprite.rect = explosion_sprite.image.get_rect()
@@ -217,9 +217,8 @@ while run:
     clock.tick(40)
     draw_stuff() 
     left_tank.draw_bullet(bullet_colliding(left_tank.bullet,right_tank.rect))
-    rightHit = hit(left_tank.bullet,right_tank.rect)
     right_tank.draw_bullet(bullet_colliding(right_tank.bullet,left_tank.rect))
-    leftHit = hit(right_tank.bullet,left_tank.rect)
+    
 
 
     # if left_shoot: 
@@ -275,7 +274,9 @@ while run:
             if event.key == py.K_SPACE or event.key == py.K_x:
                     power_increase = 0
                     power_increase2 = 0
-    
+
+    leftHit = hit(right_tank.bullet,left_tank.rect)
+    rightHit = hit(left_tank.bullet,right_tank.rect)
     fire_power += power_increase
     fire_power2 += power_increase2
 
@@ -290,7 +291,7 @@ while run:
             # Start explosion animation
             explosion_animation_pos = right_tank.bullet.x, right_tank.bullet.y
             explodesound.play()
-            for i in range(0,7):
+            for i in range(0,6):
                 explosion_sprite = explosion_animation.sprites()[i]
                 explosion_sprite.rect.center = explosion_animation_pos
                 screen.blit(explosion_sprite.image, explosion_sprite.rect)
@@ -310,7 +311,7 @@ while run:
             # Start explosion animation
             explosion_animation_pos = left_tank.bullet.x, left_tank.bullet.y
             explodesound.play()
-            for i in range(0,7):
+            for i in range(0,6):
                 explosion_sprite = explosion_animation.sprites()[i]
                 explosion_sprite.rect.center = explosion_animation_pos
                 screen.blit(explosion_sprite.image, explosion_sprite.rect)
