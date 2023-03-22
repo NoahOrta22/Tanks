@@ -310,7 +310,8 @@ while run:
                 screen.blit(explosion_sprite.image, explosion_sprite.rect)
                 py.display.flip()
                 py.time.wait(50)
-            left_tank.health=left_tank.health-25
+            # left_tank.health=left_tank.health-25
+            left_tank.health=left_tank.health-(right_tank.bullet.power * .25) # dmg based on bullets power
             print("left hit boi")
             leftHit = False
             if left_tank.health <= 0:
@@ -330,7 +331,8 @@ while run:
                 screen.blit(explosion_sprite.image, explosion_sprite.rect)
                 py.display.flip()
                 py.time.wait(50)
-            right_tank.health = right_tank.health-25
+            # right_tank.health = right_tank.health-25
+            right_tank.health = right_tank.health-(left_tank.bullet.power * .25)  # dmg based on bullets power
             print("right hit boi")
             rightHit = False
             if right_tank.health <= 0:
