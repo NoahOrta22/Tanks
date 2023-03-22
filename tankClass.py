@@ -3,8 +3,9 @@ import math
 
 WIDTH = 1400
 GRAVITY = -9.8
-
-
+trailimg = py.image.load('trail.png')
+trailimg2 = py.transform.rotate(trailimg,180)
+   
 #   Description: 
 #       Tank class dealing with tank movement, health, what screen the tank is on,
 #       position of the tank.
@@ -90,6 +91,11 @@ class Tank():
                 bullet.time += 0.18
                 bullet.x, bullet.y = bullet.path()
                 bullet.draw()
+                if self.side == 'left':
+                    self.screen.blit(trailimg,(bullet.x-500,bullet.y-10))
+                else:
+                    self.screen.blit(trailimg2,(bullet.x,bullet.y-10))
+
                 self.draw()
             else:
                 self.shoot = False
