@@ -4,6 +4,8 @@ import math
 WIDTH = 1400
 GRAVITY = -9.8
 trailimg = py.image.load('trail.png')
+trailimg = py.transform.scale(trailimg,(20,20))
+
 trailimg2 = py.transform.rotate(trailimg,180)
    
 #   Description: 
@@ -88,7 +90,7 @@ class Tank():
         if self.shoot: 
             bullet = self.bullet
             if not colliding:
-                bullet.time += 0.18
+                bullet.time += 0.4
                 bullet.x, bullet.y = bullet.path()
                 bullet.draw()
                 if self.side == 'left':
@@ -144,7 +146,7 @@ class Tank():
         if self.shoot == True:
             return self.bullet.power
         elif self.start_power == True:
-            return (self.timer.get_ticks()-self.start_t)/12
+            return (self.timer.get_ticks()-self.start_t)/8
         else:
             return 0
 
