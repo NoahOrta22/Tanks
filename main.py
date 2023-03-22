@@ -308,7 +308,7 @@ while run:
                 py.display.flip()
                 py.time.wait(50)
             # left_tank.health=left_tank.health-25
-            left_tank.health=left_tank.health-(right_tank.bullet.power * .25) # dmg based on bullets power
+            left_tank.health=left_tank.health-(right_tank.bullet.power * .4) # dmg based on bullets power
             print("left hit boi")
             leftHit = False
             if left_tank.health <= 0:
@@ -329,7 +329,7 @@ while run:
                 py.display.flip()
                 py.time.wait(50)
             # right_tank.health = right_tank.health-25
-            right_tank.health = right_tank.health-(left_tank.bullet.power * .25)  # dmg based on bullets power
+            right_tank.health = right_tank.health-(left_tank.bullet.power * .4)  # dmg based on bullets power
             print("right hit boi")
             rightHit = False
             if right_tank.health <= 0:
@@ -355,7 +355,7 @@ while run:
     bulletpower(left_tank)
 
     ## don't let the tanks move if they've shot
-    if not right_tank.shoot:
+    if not right_tank.shoot: 
         right_tank.handle_keys()
     if not left_tank.shoot:
         left_tank.handle_keys()
