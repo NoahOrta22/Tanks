@@ -87,7 +87,7 @@ class Tank():
         if self.shoot: 
             bullet = self.bullet
             if not colliding:
-                bullet.time += 0.18
+                bullet.time += 0.4
                 bullet.x, bullet.y = bullet.path()
                 bullet.draw()
                 self.draw()
