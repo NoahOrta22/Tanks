@@ -3,8 +3,11 @@ import math
 
 WIDTH = 1400
 GRAVITY = -9.8
+trailimg = py.image.load('trail.png')
+trailimg = py.transform.scale(trailimg,(20,20))
 
-
+trailimg2 = py.transform.rotate(trailimg,180)
+   
 #   Description: 
 #       Tank class dealing with tank movement, health, what screen the tank is on,
 #       position of the tank.
@@ -90,6 +93,11 @@ class Tank():
                 bullet.time += 0.4
                 bullet.x, bullet.y = bullet.path()
                 bullet.draw()
+                if self.side == 'left':
+                    self.screen.blit(trailimg,(bullet.x-500,bullet.y-10))
+                else:
+                    self.screen.blit(trailimg2,(bullet.x,bullet.y-10))
+
                 self.draw()
             else:
                 self.shoot = False
@@ -141,7 +149,6 @@ class Tank():
         # a bullet is not being shot and user is doing the power up
         elif self.start_power == True:
             return (self.timer.get_ticks()-self.start_t)/8
-        # Bullet is not being shot and power up isn't started
         else:
             return 0
 
